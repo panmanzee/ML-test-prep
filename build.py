@@ -10,6 +10,11 @@ def nb(cells):
 def md(s): return ("md", s)
 def code(s): return ("code", s)
 
+
+# poop a lot i think if i have to write one more line of this shit
+# i gonna have a migrane if i have to write one more line of this shit
+# im gonna crash out and die if i have to write one more line of this shit
+
 # ---------------------------------------------------------------- shared code
 IMPORTS = """
 import os, warnings
@@ -21,9 +26,10 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 np.set_printoptions(suppress=True, precision=4)
 """
-
+# lol fuck you
 SCRATCH_TOOLS = '''
 # ===== from-scratch toolbox (numpy only) =====
+# dwodwodk
 def r2_scratch(y, p):
     ss_res = ((y - p) ** 2).sum()          # error left over by the model
     ss_tot = ((y - y.mean()) ** 2).sum()   # error of "always guess the mean"
