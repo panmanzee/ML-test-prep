@@ -1,0 +1,77 @@
+ML PRACTICE EXAM — CHEAT SHEET  (keep open on your laptop)
+=========================================================
+
+EXAM SHAPE (my best reading of both sheets)
+  Part 1 Regression FROM SCRATCH (10)
+    1.1 (8)  Linear, Multiple, Polynomial, Best  -> train + predict
+    1.2 (2)  R2 table, ranked + predict the teacher's given value
+  Part 2 Classification WITH LIBRARY (13)
+    2.1 (8)  4+ classifiers
+    2.2 (2)  accuracy + F1 table, ranked
+    2.3 (3)  regression predictions -> class (threshold and/or stacking)
+  Bonus: your model ranking vs friends -> use the Blend (Part 1) and tuned boosting (Part 2)
+
+FASTEST PATH IN THE EXAM
+  1. Open 03_EXAM_TEMPLATE.ipynb on the laptop. Copy it cell by cell to the public PC.
+  2. Change only the CHANGE ME lines: path, TARGET, CLASS_COL/THRESHOLD, DROP_COLS, given.
+  3. Run all. If something breaks, see "COMMON ERRORS" below.
+
+FORMULAS
+  Linear model     y_hat = theta0 + theta1*x1 + ... + thetan*xn = X_b @ theta   (X_b = [1, X])
+  MSE              mean((y_hat - y)^2)
+  Normal equation  theta = (X^T X)^-1 X^T y
+  Ridge            theta = (X^T X + lam*I)^-1 X^T y      (I[0,0] = 0, don't penalise the bias)
+  GD gradient      grad = (2/n) X^T (X theta - y)    ;   theta -= lr * grad
+  R2               1 - sum((y - y_hat)^2) / sum((y - mean(y))^2)
+  RMSE             sqrt(mean((y - y_hat)^2))
+  Standardise      z = (x - mean_train) / std_train
+  Sigmoid          1 / (1 + e^-z)
+  Accuracy         (TP+TN) / all
+  Precision        TP / (TP+FP)       "of my YES calls, how many right"
+  Recall           TP / (TP+FN)       "of real YES, how many caught"
+  F1               2PR / (P+R)        macro F1 = average F1 over classes (multi-class)
+
+MUST-KNOW CODE (from scratch, numpy)
+  Xb = np.c_[np.ones(len(X)), X]
+  theta = np.linalg.solve(Xb.T @ Xb, Xb.T @ y)          # OLS
+  pred  = np.c_[np.ones(len(Xt)), Xt] @ theta
+  r2 = 1 - ((y-p)**2).sum() / ((y-y.mean())**2).sum()
+
+  # gradient descent
+  theta = np.zeros(Xb.shape[1])
+  for _ in range(2000):
+      theta -= lr * (2/len(y)) * Xb.T @ (Xb @ theta - y)
+
+  # polynomial degree 2 = add squares + pair products, then OLS on them
+  # KNN regression = average y of k nearest rows (distance-weighted)
+  # Best = w*poly_pred + (1-w)*knn_pred, tune lam/k/w on a VALIDATION split of train
+
+MUST-KNOW CODE (sklearn)
+  from sklearn.model_selection import train_test_split, GridSearchCV
+  X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+  model = make_pipeline(StandardScaler(), LogisticRegression(max_iter=2000))
+  model.fit(X_train, y_train); p = model.predict(X_test)
+  accuracy_score(y_test, p);  f1_score(y_test, p)              # binary
+  f1_score(y_test, p, average="macro")                          # multi-class
+  ConfusionMatrixDisplay.from_predictions(y_test, p)
+  GridSearchCV(model, {"param": [..]}, cv=5, scoring="f1_macro").fit(X_train, y_train)
+
+DATA PREP
+  df.isnull().sum()            missing values -> df.dropna()  or  df.fillna(df.mean(numeric_only=True))
+  pd.get_dummies(df, drop_first=True).astype(float)      text -> 0/1 columns
+  drop: id columns, raw date strings, and any column that IS the answer (leakage)
+  dates: pd.to_datetime(df.date, dayfirst=True).dt.hour / .dt.dayofweek / .dt.month
+
+COMMON ERRORS
+  could not convert string to float   -> forgot get_dummies / drop a text column
+  LinAlgError: Singular matrix        -> use np.linalg.pinv or add lam (Ridge) > 0
+  GD loss = nan / inf                 -> lower lr (/10) and STANDARDISE X
+  shapes not aligned                  -> X needs 2-D: X[:, [j]] not X[:, j]; given row via make_row()
+  R2 scratch != sklearn               -> bias column missing or scaled with test stats
+  f1_score "Target is multiclass"     -> add average="macro"
+  ConvergenceWarning (LogReg)         -> max_iter=2000 and scale X
+
+WHAT TO WRITE AFTER EACH TABLE (marks!)
+  "Model X ranks first (R2 = ...). It's better because ... (non-linear pattern / ensemble cancels errors /
+   handles feature interactions). Linear is worst because one feature can't explain ...".
+  For classification: "F1 is the main metric because the classes are imbalanced. Accuracy alone can mislead."
