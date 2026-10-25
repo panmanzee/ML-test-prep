@@ -12,6 +12,9 @@ ML FINAL — open in this order
   Q4_Poly_Best_Degree.ipynb                 which poly degree? -> train vs CV R2 graph, picks it for you
   Q5_Auto_Prepare_One_Function.ipynb        ONE def auto_prepare(): load any file + clean + split + best poly degree
   Q6_Make_Your_Own_Data.ipynb               ONE def make_data(): no data given? paste a table or build one from the rule, then auto_prepare()
+  Q7_Short_Type_It_Yourself.ipynb           no copy-paste? short clean() + best_degree() to type by hand (~40 lines)
+  STEPS_1_Clean_Data.ipynb                  clean by hand, 12 short steps, saves ../exam_clean.csv
+  STEPS_2_Make_Data.ipynb                   make data by hand (Way A type table / Way B ranges + rule), saves ../exam.csv
                                             copy cell 1 into your exam notebook, then d = auto_prepare("file", target="y")
 
 2_DATA_PREP
