@@ -1,0 +1,50 @@
+EXAM DAY - STEP BY STEP
+=======================
+
+0. Put the exam data file in this ML_FINAL folder (next to titanic.csv).
+   No data file, only a requirement?  -> open 1_MAIN\Q6, make the table,
+   save it:  make_data(..., save="../exam.csv")   then continue from step 1.
+
+1. Read the question. Write down 3 things:
+     - the data file name
+     - the columns to use (x)       e.g. Age, Pclass, SibSp
+     - what to predict (target)     e.g. Fare  (Q2: a class + a number)
+
+2. Open the notebook:
+     Q1 (from scratch, regression)          -> 1_MAIN\Q1_Regression_from_scratch.ipynb
+     Q2 (sklearn, class then regression)    -> 1_MAIN\Q2_Classification_then_Regression.ipynb
+
+3. Change only the lines marked  # <<<  in cell 1:
+     df = pd.read_csv("../exam.csv")
+     cols = ["col1", "col2", "col3"]
+     target = "y"                                   (Q2: cls_target, reg_target)
+
+4. Is the file NOT a csv, or is the data dirty ("?", "$1,234", text, empty cells)?
+     -> uncomment the 3 EMERGENCY lines under the # <<< lines.
+     -> run  print(df.columns)  : text columns may become new names like city_cnx,
+        so fix cols to match.
+
+5. Q1 only - Poly degree (Q1 uses x + x^2 = degree 2 by default):
+     Open Q5, run cell 1, then
+        d = auto_prepare("../exam.csv", target="y", cols=["col1", "col2"])
+     If it says best degree = 2 -> do nothing.
+     Else, in Q1 replace the "Poly" line with the degree it found
+     (or use d["xp_train"], d["xp_test"] with linear()).
+
+6. Run All. Check:
+     - no red errors
+     - the ranking table at the bottom (best model = top)
+     - write your prediction / answer from the best model
+
+7. Something breaks? Last resort for any data:
+     Q5:  d = auto_prepare(file_or_df, target="y")      (Q2: max_degree=0)
+     then fit the models on d["x_train"], d["y_train"] and test on d["x_test"].
+
+Where is what
+  1_MAIN\Q1  Q2   the exam answers (change # <<< only)
+  1_MAIN\Q3       other metrics (MAE, RMSE, MAPE, precision, recall ...)
+  1_MAIN\Q4       poly degree finder (long version)
+  1_MAIN\Q5       auto_prepare(): load + clean + split + best degree, one def
+  1_MAIN\Q6       make_data(): paste a table / build data from a rule, one def
+  2_DATA_PREP     loading other file types, cleaning examples
+  3_SPARE         extra models
